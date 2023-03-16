@@ -40,6 +40,49 @@ lyric<- style_lyrics %>%
 
 ## part purr taylor swift lyrics 
 ```{r}
-load(here())
+load(here("data", "ts.Rdata"))
+```
+
+```{r}
+get_lyrics <- function(artist, album, year, song){
+  # create url base
+  base1 <- c("https://www.songlyrics.com/")
+  base2 <- c("-lyrics") #might need to add / here but we'll see first 
+ 
+   artist_url <- str_replace_all(artist,pattern = "(?!\\!)[[:punct:]]", replacement = " ") %>% 
+    str_replace_all(pattern = " ", replacement= "-") %>% 
+     str_to_lower() %>% 
+     str_squish()
+   
+  song_url <- str_remove_all(song, pattern= "(?!\\[!'])[[:punct:]]") %>% 
+    str_replace_all(pattern = "'", replacement= " ") %>% 
+    str_replace_all(pattern = " ", replacement = "-") %>% 
+    str_to_lower() %>% 
+    str_squish()
+  
+  url <- paste(base1, artist_url, "/", song_url, base2, sep = "")
+  
+  style_lyrics<-read_html(url) %>% 
+    html_nodes("#songLyricsDiv") %>% 
+    html_text() %>% 
+    str_replace_all("\n"," ") %>% 
+    str_remove_all(pattern = "[[:punct:]]") %>% 
+    str_to_lower() %>% 
+    str_split(" ") %>% 
+    as.data.frame() %>% 
+    mutate(song=song,artist=artist,album=album,year=year)
+  
+  colnames(style_lyrics)[1] <- "word"
+  
+  lyric <- style_lyrics %>% 
+    anti_join(stop_words, by = "word") 
+  
+  return(lyric)
+}
+```
+
+## Run Purr loop!! 
+```{r}
+safely()
 ```
 
