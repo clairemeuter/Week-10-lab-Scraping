@@ -1,0 +1,11 @@
+---
+title: "nathans_webscraping"
+author: "Claire Meuter"
+date: "2023-03-16"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
