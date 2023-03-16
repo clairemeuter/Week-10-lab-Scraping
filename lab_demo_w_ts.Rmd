@@ -7,5 +7,39 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(rvest)
+library(tayloRswift)
+library(tidytext)
+library(ggwordcloud)
+library(here)
+```
+## style lyrics
+```{r}
+url <- "https://www.songlyrics.com/taylor-swift/style-lyrics/"
+#storing webpage html that we're sourcing from. If we isolate where the lyrics are coming from (which HTML node) we can isolate just the taylor swift lyrics
+style_lyrics <- read_html(url) %>% 
+  html_nodes("#songLyricsDiv") %>% 
+  html_text() %>% 
+  str_replace_all("\n"," ") %>% 
+  str_remove_all(pattern = "[[:punct:]]") %>% #removing punctution 
+  str_to_lower() %>% #making everything lowercase
+  str_split(" ") %>% 
+  as.data.frame()
+
+ 
+colnames(style_lyrics)[1] <- "word" #changing the ugly header to nice simple word
+
+lyric<- style_lyrics %>% 
+  anti_join(stop_words, by = "word")
+
+
+#we want to do this interatively- or automate this process to extract a lot of data at once
+```
+
+
+## part purr taylor swift lyrics 
+```{r}
+load(here())
 ```
 
